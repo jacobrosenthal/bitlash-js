@@ -117,17 +117,17 @@ describe('sendCommands', function () {
     var opt = {
       timeout: 10,
       echo: true,
-      cmd: 'print power.voltage'
+      cmd: 'print power.isvccenabled'
     };
 
     sendCommand(hardware, opt, function (err, data) {
       expect(err).to.not.be.ok;
       expect(data).to.exist;
-      expect(data).to.deep.include.members(['394']);
+      expect(data).to.deep.include.members(['1']);
       done();
     });
     process.nextTick(function(){
-      hardware.insert('394\r\n' + prompt);
+      hardware.insert('1\r\n' + prompt);
     });
   });
 
