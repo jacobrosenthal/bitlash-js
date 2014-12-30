@@ -15,14 +15,22 @@ var EventEmitter = require('events').EventEmitter;
 
 var hardware = new EventEmitter();
 
+//echo back what gets written
 hardware.write = function(data, callback){
+
+  //pull the /n off and convert it to 0x0d 0x0a
+  var buf2 = data.slice(0, data.length-1);
+  buf2  = Buffer.concat([buf2, new Buffer([0x0d, 0x0a])]);
+  this.insert(buf2);
   callback(null, data);
-  this.insert(data + "\r\n");
-}
+};
 
 hardware.insert = function(data){
-  this.emit('data', data);
-}
+  var self = this;
+  process.nextTick(function(){
+    self.emit('data', data);
+  });
+};
 
 describe('sendCommands', function () {
   afterEach(function () {
@@ -37,9 +45,7 @@ describe('sendCommands', function () {
       expect(data).to.exist;
       done();
     });
-    process.nextTick(function(){
-      hardware.insert(greeting + prompt);
-    });
+    hardware.insert(greeting + prompt);
   });
 
   it('should take null options', function (done) {
@@ -48,9 +54,7 @@ describe('sendCommands', function () {
       expect(err).to.not.be.ok;
       done();
     });
-    process.nextTick(function(){
-      hardware.insert(greeting + prompt);
-    });
+    hardware.insert(greeting + prompt);
   });
 
   it('should take no options', function (done) {
@@ -60,9 +64,7 @@ describe('sendCommands', function () {
       expect(data).to.exist;
       done();
     });
-    process.nextTick(function(){
-      hardware.insert(greeting + prompt);
-    });
+    hardware.insert(greeting + prompt);
   });
 
   it('should timeout', function (done) {
@@ -91,9 +93,7 @@ describe('sendCommands', function () {
       expect(data).to.deep.include.members(['led.on']);
       done();
     });
-    process.nextTick(function(){
-      hardware.insert(prompt);
-    });
+    hardware.insert(prompt);
   });
 
   it('should return empty for commands with no response', function (done) {
@@ -108,9 +108,7 @@ describe('sendCommands', function () {
       expect(data).to.deep.include.members([]);
       done();
     });
-    process.nextTick(function(){
-      hardware.insert(prompt);
-    });
+    hardware.insert(prompt);
   });
 
   it('should return response for commands with response', function (done) {
@@ -126,9 +124,7 @@ describe('sendCommands', function () {
       expect(data).to.deep.include.members(['1']);
       done();
     });
-    process.nextTick(function(){
-      hardware.insert('1\r\n' + prompt);
-    });
+    hardware.insert('1\r\n' + prompt);
   });
 
 });
