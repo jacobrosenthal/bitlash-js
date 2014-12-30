@@ -42,4 +42,6 @@ Bitlash.send(serialPort, function(error, results){
 0.0.1 
 forked from stk500 for its serial parser style
 
+0.1.0 
+working implementation with tests
 
