@@ -114,7 +114,6 @@ describe('sendCommands', function () {
   it('should return response for commands with response', function (done) {
     var opt = {
       timeout: 10,
-      echo: true,
       cmd: 'print power.isvccenabled'
     };
 
@@ -125,6 +124,21 @@ describe('sendCommands', function () {
       done();
     });
     hardware.insert('1\r\n' + prompt);
+  });
+
+  it('should send commands that have parse token in them', function (done) {
+    var opt = {
+      timeout: 10,
+      cmd: 'function on.d2.high { if(  millis - y > z){ hq.report("vent", key(millis)); y = millis;}};'
+    };
+
+    sendCommand(hardware, opt, function (err, data) {
+      expect(err).to.not.be.ok;
+      expect(data).to.exist;
+      expect(data).to.deep.include.members(['saved']);
+      done();
+    });
+    hardware.insert('saved\r\n' + prompt);
   });
 
 });

@@ -45,3 +45,6 @@ forked from stk500 for its serial parser style
 0.1.0 
 working implementation with tests
 
+0.2.0 
+add a newline to parse regex to allow token in text
+
